@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: duocode
+      MYSQL_USER: mariadb
+      MYSQL_PASSWORD: mariadb
+    volumes:
+      - mariadb_data:/var/lib/mariadb/data/
+    ports:
+      - '3306:3306'
+volumes:
+  mariadb_data:
