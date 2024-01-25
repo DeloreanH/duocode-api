@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Duocoder } from '../../duocoders/entities/duocoder.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('departments')
 export class Department {
@@ -15,9 +16,14 @@ export class Department {
   @Column({ nullable: true })
   description: string;
 
-  @Column()
-  createdAt: string;
+  @OneToMany(() => Duocoder, (duocoder) => duocoder.department)
+  duocoders: Duocoder[];
 
-  @Column()
-  updatedAt: string;
+  @ApiProperty()
+  @Column({ type: Date, nullable: true })
+  createdAt: Date;
+
+  @ApiProperty()
+  @Column({ type: Date, nullable: true })
+  updatedAt: Date;
 }
