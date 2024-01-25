@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Duocoder } from '../../duocoders/entities/duocoder.entity';
+import { Duocoder } from 'src/modules/duocoders/entities/duocoder.entity';
 import {
   BaseEntity,
   Column,
   Entity,
-  OneToMany,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('departments')
-export class Department extends BaseEntity {
+@Entity('skills')
+export class Skill extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,11 +18,7 @@ export class Department extends BaseEntity {
   @Column({ nullable: false })
   name: string;
 
-  @ApiProperty()
-  @Column({ nullable: true })
-  description: string;
-
-  @OneToMany(() => Duocoder, (duocoder) => duocoder.department)
+  @ManyToMany(() => Duocoder, (duocoder) => duocoder.skills)
   duocoders: Duocoder[];
 
   @ApiProperty()

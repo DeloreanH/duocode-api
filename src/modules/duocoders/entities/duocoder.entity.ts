@@ -1,9 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Department } from '../../departments/entities/department.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Skill } from '../../skills/entities/skill.entity';
 
 @Entity('duocoders')
-export class Duocoder {
+export class Duocoder extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -42,6 +51,18 @@ export class Duocoder {
   @ApiProperty()
   @Column({ type: Date, nullable: true })
   birthday: Date;
+
+  @ManyToMany(() => Skill, (skill) => skill.duocoders)
+  @JoinTable({
+    name: 'duocoders_skills',
+    joinColumn: {
+      name: 'duocoderId',
+    },
+    inverseJoinColumn: {
+      name: 'skillId',
+    },
+  })
+  skills: Skill[];
 
   @ApiProperty({ type: Date })
   @Column({ type: Date, nullable: true })

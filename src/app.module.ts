@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmOptions } from 'db/typeorm.config';
 import { DuocodersModule } from './modules/duocoders/duocoders.module';
+import { SkillsModule } from './modules/skills/skills.module';
 import DepartmentModule from './modules/departments/department.module';
 
 @Module({
@@ -13,6 +14,7 @@ import DepartmentModule from './modules/departments/department.module';
     TypeOrmModule.forRoot(TypeOrmOptions),
     DepartmentModule,
     DuocodersModule,
+    SkillsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

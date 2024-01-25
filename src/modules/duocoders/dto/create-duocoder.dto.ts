@@ -36,6 +36,11 @@ export class CreateDuocoderDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsNumber({}, { each: true })
+  skillIds: number[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   photo: string;
 

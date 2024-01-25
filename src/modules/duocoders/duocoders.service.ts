@@ -5,21 +5,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Duocoder } from './entities/duocoder.entity';
 import { Repository } from 'typeorm';
 import { Pagination } from 'src/common/utils/pagination';
+import { SkillsService } from '../skills/skills.service';
 
 @Injectable()
 export class DuocodersService {
   constructor(
     @InjectRepository(Duocoder)
     private readonly duocoderRepository: Repository<Duocoder>,
+    private readonly skillService: SkillsService,
   ) {}
 
-  create(createDuocoderDto: CreateDuocoderDto) {
-    return this.duocoderRepository.save(createDuocoderDto);
+  async create(createDuocoderDto: CreateDuocoderDto) {
+    const { skillIds, ...data } = createDuocoderDto;
+    const skills = await this.skillService.findByIds(skillIds);
+
+    return this.duocoderRepository.save({
+      ...data,
+      skills,
+    });
   }
 
   async paginate(page: number, limit: number) {
     const [duocoders, count] = await this.duocoderRepository.findAndCount({
-      relations: ['department'],
+      relations: ['department', 'skills'],
       take: limit,
       skip: (page - 1) * limit,
     });
@@ -35,8 +43,20 @@ export class DuocodersService {
   }
 
   async update(id: number, updateDuocoderDto: UpdateDuocoderDto) {
-    await this.duocoderRepository.update({ id }, updateDuocoderDto);
-    return this.duocoderRepository.findOneByOrFail({ id });
+    const { skillIds, ...payload } = updateDuocoderDto;
+    const duocoder = await this.duocoderRepository.findOneByOrFail({ id });
+
+    let data = payload;
+
+    if (skillIds.length > 0) {
+      const skills = await this.skillService.findByIds(skillIds);
+      data = { ...data, ...{ skills } };
+    }
+
+    return await this.duocoderRepository.save({
+      ...duocoder,
+      ...data,
+    });
   }
 
   remove(id: number) {
